@@ -1,27 +1,57 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class CengTreeParser
 {
     public static ArrayList<CengBook> parseBooksFromFile(String filename)
     {
-        ArrayList<CengBook> bookList = new ArrayList<CengBook>();
+        ArrayList<CengBook> bookList = new ArrayList<>();
 
-        // You need to parse the input file in order to use GUI tables.
-        // TODO: Parse the input file, and convert them into CengBooks
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] split = line.split("\\|");
+                bookList.add(new CengBook(
+                        Integer.parseInt(split[0]),
+                        split[1],
+                        split[2],
+                        split[3]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return bookList;
     }
 
     public static void startParsingCommandLine() throws IOException
     {
-        // TODO: Start listening and parsing command line -System.in-.
-        // There are 4 commands:
-        // 1) quit : End the app, gracefully. Print nothing, call nothing, just break off your command line loop.
-        // 2) add : Parse and create the book, and call CengBookRunner.addBook(newlyCreatedBook).
-        // 3) search : Parse the bookID, and call CengBookRunner.searchBook(bookID).
-        // 4) print : Print the whole tree, call CengBookRunner.printTree().
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            String input = scanner.nextLine();
+            String[] split = input.split("\\|");
+            split[0] = split[0].toLowerCase();
 
-        // Commands (quit, add, search, print) are case-insensitive.
+            if (split[0].equals("quit")) {
+                scanner.close();
+                break;
+            } else if (split[0].equals("print")) {
+                CengBookRunner.printTree();
+            } else if (split[0].equals("add")) {
+                CengBookRunner.addBook(new CengBook(
+                        Integer.parseInt(split[1]),
+                        split[2],
+                        split[3],
+                        split[4]));
+            } else if (split[0].equals("search")) {
+                CengBookRunner.searchBook(Integer.parseInt(split[1]));
+            } else {
+                scanner.close();
+                throw new IllegalStateException();
+            }
+        }
     }
 }
