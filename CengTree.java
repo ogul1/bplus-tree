@@ -42,18 +42,46 @@ public class CengTree
     public ArrayList<CengTreeNode> searchBook(Integer bookID)
     {
         ArrayList<CengTreeNode> res = new ArrayList<>();
-        if (this.searchBook(bookID, this.root, res)) {
+        CengBook target = this.searchBook(bookID, this.root, res);
+        if (target != null) {
+            printPath(res, target);
             return res;
         }
+        System.out.println("Could not find " + bookID + ".");
         return null;
     }
 
-    public boolean searchBook(Integer bookID, CengTreeNode cur, ArrayList<CengTreeNode> res) {
+    public void printPath(ArrayList<CengTreeNode> res, CengBook target) {
+        int level = 0;
+        for (CengTreeNode cur: res) {
+            String tab = "\t".repeat(level);
+            if (cur instanceof CengTreeNodeInternal) {
+                CengTreeNodeInternal t = (CengTreeNodeInternal) cur;
+                System.out.println(tab + "<index>");
+                for (int i = 0, n = t.keyCount(); i < n; ++i) {
+                    System.out.println(tab + t.keyAtIndex(i));
+                }
+                System.out.println(tab + "</index>");
+            } else if (cur instanceof CengTreeNodeLeaf) {
+                System.out.print(tab + "<record>");
+                System.out.print(target.getBookID() + "|");
+                System.out.print(target.getBookTitle() + "|");
+                System.out.print(target.getAuthor() + "|");
+                System.out.print(target.getGenre());
+                System.out.println("</record>");
+            } else {
+                throw new IllegalStateException();
+            }
+            ++level;
+        }
+    }
+
+    public CengBook searchBook(Integer bookID, CengTreeNode cur, ArrayList<CengTreeNode> res) {
         res.add(cur);
 
         if (cur instanceof CengTreeNodeLeaf) {
             CengTreeNodeLeaf t = (CengTreeNodeLeaf) cur;
-            return t.existsByBookId(bookID);
+            return t.findByBookId(bookID);
 
         } else if (cur instanceof CengTreeNodeInternal) {
             CengTreeNodeInternal t = (CengTreeNodeInternal) cur;
@@ -72,7 +100,7 @@ public class CengTree
             throw new IllegalStateException();
         }
 
-        return false; // won't reach here
+        return null; // won't reach here
     }
 
     public void printTree()

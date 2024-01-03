@@ -46,13 +46,13 @@ public class CengTreeNodeLeaf extends CengTreeNode
         }
     }
 
-    public boolean existsByBookId(Integer bookID) {
+    public CengBook findByBookId(Integer bookID) {
         for (int i = 0, n = this.bookCount(); i < n; ++i) {
             if (this.bookKeyAtIndex(i).equals(bookID)) {
-                return true;
+                return bookAtIndex(i);
             }
         }
-        return false;
+        return null;
     }
 
     public void split(CengTree tree) {
