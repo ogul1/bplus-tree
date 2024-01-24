@@ -30,10 +30,9 @@ public class CengTreeParser
     public static void startParsingCommandLine() throws IOException
     {
         Scanner scanner = new Scanner(System.in);
-        while (true) {
+        while (scanner.hasNextLine()) {
             String input = scanner.nextLine();
             String[] split = input.split("\\|");
-            split[0] = split[0].toLowerCase();
 
             if (split[0].equals("quit")) {
                 scanner.close();

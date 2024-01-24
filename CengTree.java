@@ -6,6 +6,9 @@ public class CengTree
 
     public CengTree(Integer order)
     {
+        if (order < 1) {
+            throw new IllegalStateException("Order must be greater than 0.");
+        }
         CengTreeNode.order = order;
         this.root = new CengTreeNodeLeaf(null);
     }
